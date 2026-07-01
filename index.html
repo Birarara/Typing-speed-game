@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <header>
+            <h1>Fingers of Fury</h1>
+            <p>Test your typing speed and accuracy</p>
+        </header>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <span class="value" id="timer">60s</span>
+                <span class="label">Time Left</span>
+            </div>
+            <div class="stat-box">
+                <span class="value" id="wpm">0</span>
+                <span class="label">WPM</span>
+            </div>
+            <div class="stat-box">
+                <span class="value" id="accuracy">100%</span>
+                <span class="label">Accuracy</span>
+            </div>
+        </div>
+
+        <div class="text-display" id="quote-display">
+            The quick brown fox jumps over the lazy dog. Click the box below and start typing to begin the challenge!
+        </div>
+
+        <div class="input-container">
+            <textarea id="quote-input" placeholder="Start typing here..." autofocus></textarea>
+            <button class="btn-reset" id="reset-btn">Restart</button>
+        </div>
+    </div>
+
+</body>
+</html>
