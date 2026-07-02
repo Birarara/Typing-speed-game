@@ -5,12 +5,10 @@ const btn = document.querySelector('#btn');
 const score = document.querySelector('#score');
 const show_sentence = document.querySelector('#showSentence');
 
-let startTime, endTime, totalTimeTaken;
+
+let startTime, endTime, totalTimeTaken,author;
 
 
-const sentences = ['The quick brown fox jumps over the lazy dog 1',
-    'The quick brown fox jumps over the lazy dog 2',
-    'The quick brown fox jumps over the lazy dog 3 ']
 
 // step 5
 
@@ -39,22 +37,46 @@ const endTypingTest = () => {
     // console.log(totalTimeTaken);
 
     calculateTypingSpeed(totalTimeTaken);
-
-    show_sentence.innerHTML = "";
+    show_sentence.innerHTML = "You just wrote a quote by " + author;
     typing_ground.value = "";
 }
 
 
 // step 3
-const startTyping = () => {
-    let randomNumber = Math.floor(Math.random() * sentences.length);
-    // console.log(randomNumber);
-    show_sentence.innerHTML = sentences[randomNumber];
+async function startTyping() {
+    show_sentence.innerHTML = "ready?";
+    btn.innerText = "Loading...";
+    btn.setAttribute('disabled', 'true');
+    const apiKey='hDxbXV5HKtjMamBLUixSGVAtzegofCItWqCvz4VS';
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const apiUrl = `https://api.api-ninjas.com/v1/quotes`;
+    try{
+        const response = await fetch(proxyUrl + apiUrl,{
+            method: 'GET',
+            headers: {
+                'X-Api-Key': apiKey,
+                'Content-Type':'application/json'
+            }
+        });
+        const data = await response.json();
+        console.log(data)
+        show_sentence.innerHTML = data[0].quote;
+        author = data[0].author;
+        typing_ground.removeAttribute('disabled');
+        typing_ground.focus();
+        btn.innerText="Done";
+        btn.removeAttribute('disabled');
 
-    let date = new Date();
-    startTime = date.getTime();
-
-    btn.innerText = "Done";
+        let date = new Date();
+        startTime = date.getTime();
+    }
+    catch (error){
+        show_sentence.innerHTML = "Failed to load quote. Try clicking start again.";
+        btn.innerText = "Start";
+        btn.removeAttribute('disabled');
+        typing_ground.setAttribute('disabled','true');
+        console.error("API error: ",error);
+    }
 }
 
 

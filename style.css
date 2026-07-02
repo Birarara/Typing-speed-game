@@ -31,7 +31,7 @@ body{
     height: 20rem;
     padding: 1rem 2rem;
     font-size: 1.6rem;
-    align-self: center;
+    align-self: center
 }
 
 #btn{
@@ -52,7 +52,7 @@ h2{
     text-align: center;
 }
 
-#showSentence, #score{
+#showSentence, #score,#showAuthor{
     font-size: 1.6rem;
     margin: 2rem 0;
     letter-spacing: .02rem;
