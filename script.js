@@ -96,3 +96,19 @@ btn.addEventListener('click', () => {
             break;
     }
 })
+typing_ground.addEventListener('keydown', (e) => {
+    // Check if the pressed key is "Enter"
+    if (e.key === "Enter") {
+        e.preventDefault(); // Prevents a new line break from appearing in the textarea
+
+        // Read the button state to decide whether to start or finish
+        const currentStatus = btn.innerText.toLowerCase();
+
+        if (currentStatus === "start") {
+            startTyping();
+        } else if (currentStatus === "done") {
+            typing_ground.setAttribute('disabled', 'true');
+            endTypingTest();
+        }
+    }
+});
