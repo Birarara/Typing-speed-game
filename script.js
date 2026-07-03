@@ -43,22 +43,25 @@ const endTypingTest = () => {
 
 
 // step 3
+const fallbackQuotes = [
+    { quote: "The quick brown fox jumps over the lazy dog.", author: "Traditional" },
+    { quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+    { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+    { quote: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci" },
+    { quote: "Code is like humor. When you have to explain it, it’s bad.", author: "Cory House" }
+];
 async function startTyping() {
     show_sentence.innerHTML = "ready?";
     btn.innerText = "Loading...";
     btn.setAttribute('disabled', 'true');
-    const apiKey='hDxbXV5HKtjMamBLUixSGVAtzegofCItWqCvz4VS';
-    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-    const apiUrl = `https://api.api-ninjas.com/v1/quotes`;
+
     try{
-        const response = await fetch(proxyUrl + apiUrl,{
-            method: 'GET',
-            headers: {
-                'X-Api-Key': apiKey,
-                'Content-Type':'application/json'
-            }
-        });
+        const response = await fetch('https://api.breakingbadquotes.xyz/v1/quotes');
+        if(!response.ok){
+            throw new Error('HTTP error! status: ${response.status}')
+        }
         const data = await response.json();
+
         console.log(data)
         show_sentence.innerHTML = data[0].quote;
         author = data[0].author;
@@ -97,11 +100,11 @@ btn.addEventListener('click', () => {
     }
 })
 typing_ground.addEventListener('keydown', (e) => {
-    // Check if the pressed key is "Enter"
+ 
     if (e.key === "Enter") {
-        e.preventDefault(); // Prevents a new line break from appearing in the textarea
+        e.preventDefault(); 
 
-        // Read the button state to decide whether to start or finish
+  
         const currentStatus = btn.innerText.toLowerCase();
 
         if (currentStatus === "start") {
