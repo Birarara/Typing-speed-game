@@ -8,9 +8,15 @@ const show_sentence = document.querySelector('#showSentence');
 
 let startTime, endTime, totalTimeTaken,author;
 
+const renderSentenceWithSpans = (textString)=>{
+    show_sentence.innerHTML="";
+    textString.split("").forEach(char => {
+        const charSpan = document.createElement('span');
+        charSpan.innerText=char;
+        show_sentence.appendChild(charSpan);
+    });
+};
 
-
-// step 5
 
 const calculateTypingSpeed = (time_taken) => {
     let  totalWords = typing_ground.value.trim();
@@ -23,7 +29,7 @@ const calculateTypingSpeed = (time_taken) => {
     }else{
         score.innerHTML = `Your typing speed is 0 words per minutes & time taken ${time_taken} sec`;
     }
-}
+};
 
 // step 4
 const endTypingTest = () => {
@@ -39,7 +45,7 @@ const endTypingTest = () => {
     calculateTypingSpeed(totalTimeTaken);
     show_sentence.innerHTML = "You just wrote a quote by " + author;
     typing_ground.value = "";
-}
+};
 
 
 // step 3
@@ -83,9 +89,28 @@ async function startTyping() {
 }
 
 
+typing_ground.addEventListener('input', () => {
+    const arraySpans = show_sentence.querySelectorAll('span');
+    const arrayValues = typing_ground.value.split('');
 
+    arraySpans.forEach((characterSpan, index) => {
+        const typedChar = arrayValues[index];
 
-// step 2
+        if (typedChar == null) {
+            // Not typed yet: Reset back to standard neutral style
+            characterSpan.classList.remove('correct-char');
+            characterSpan.classList.remove('incorrect-char');
+        } else if (typedChar === characterSpan.innerText) {
+            // Match found: turn green
+            characterSpan.classList.add('correct-char');
+            characterSpan.classList.remove('incorrect-char');
+        } else {
+            // Typo found: turn red
+            characterSpan.classList.remove('correct-char');
+            characterSpan.classList.add('incorrect-char');
+        }
+    });
+});
 btn.addEventListener('click', () => {
     switch (btn.innerText.toLowerCase()) {
         case "start":
@@ -115,3 +140,5 @@ typing_ground.addEventListener('keydown', (e) => {
         }
     }
 });
+
+show_sentence.innerHTML="click";

@@ -49,7 +49,8 @@ h2{
     font-size: 2.4rem;
     text-transform: capitalize;
     color: #645CBB;
-    text-align: center;
+    text-align: top;
+    
 }
 
 #showSentence, #score,#showAuthor{
@@ -57,4 +58,23 @@ h2{
     margin: 2rem 0;
     letter-spacing: .02rem;
     text-align: center;
+}
+
+.correct-char{
+    color: green;
+}
+
+.incorrect-char{
+    color: #e74c3c; 
+    background-color: rgba(231, 76, 60, 0.15); 
+    border-radius: 2px;
+}
+#showSentence {
+    font-size: 1.8rem;
+    line-height: 1.6;
+    color: #555;
+    text-align: left; 
+    max-width: 50rem;
+    margin: 2rem auto;
+    word-break: break-word;
 }
