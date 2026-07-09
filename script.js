@@ -39,7 +39,7 @@ const calculateTypingSpeed = (time_taken) => {
 
     if (actualWords !== 0) {
         let typing_speed = Math.round((actualWords / time_taken) * 60);
-        show_sentence.innerHTML = `Speed: ${typing_speed} WPM <br> Time: ${Math.round(time_taken)}s <br> Author: ${author} <br> [Press Enter to restart]`;
+        show_sentence.innerHTML = `Speed: ${typing_speed} WPM <br> Time: ${Math.round(time_taken)}s <br> Written by ${author} <br> [Press Enter to restart]`;
     } else {
         show_sentence.innerHTML = `Speed: 0 WPM | Time: ${Math.round(time_taken)}s [Press Enter to restart]`;
     }
