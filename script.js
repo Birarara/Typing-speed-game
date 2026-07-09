@@ -1,7 +1,7 @@
 const typing_ground = document.querySelector('#textarea');
 const show_sentence = document.querySelector('#showSentence');
 
-let startTime, endTime, totalTimeTaken, author;
+let startTime, endTime, totalTimeTaken, author,Punctuation;
 let isGameRunning = false; 
 
 const fallbackQuotes = [
@@ -17,11 +17,20 @@ const renderSentenceWithSpans = (textString) => {
     const cleanText = textString
         .toLowerCase()
         .replace(/[^a-z0-9\s]/g, '');
-    cleanText.split("").forEach(char => {
+      if(Punctuation==0){
+        textString.split("").forEach(char => {
         const charSpan = document.createElement('span');
         charSpan.innerText = char;
         show_sentence.appendChild(charSpan);
     });
+      }
+      else{
+        cleanText.split("").forEach(char => {
+        const charSpan = document.createElement('span');
+        charSpan.innerText = char;
+        show_sentence.appendChild(charSpan);
+    });
+      }
 };
 
 const calculateTypingSpeed = (time_taken) => {
@@ -113,5 +122,18 @@ window.addEventListener('click', () => {
     if (isGameRunning) typing_ground.focus();
 });
 
+const modeToggle = document.querySelector('#modeToggle');
 
+modeToggle.addEventListener('change',() => {
+    if (modeToggle.checked){
+        
+        Punctuation=0;
+        
+    }
+    else{
+        
+        Punctuation=1;
+        
+    }
+})
 show_sentence.innerHTML = "Press [ Enter ] to start typing";
