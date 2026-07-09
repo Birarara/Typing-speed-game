@@ -50,7 +50,6 @@ const endTypingTest = () => {
     let date = new Date();
     endTime = date.getTime();
     totalTimeTaken = (endTime - startTime) / 1000;
-
     calculateTypingSpeed(totalTimeTaken);
     typing_ground.value = "";
     typing_ground.setAttribute('disabled', 'true');
