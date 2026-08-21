@@ -15,7 +15,6 @@ class TypingSpeedGame {
         this.includePunctuation = this.modeToggle.checked;
         this.author = '';
         this.startTime = 0;
-
         this.bindEvents();
         this.showSentence.innerHTML = "Press [ Enter ] to start typing";
     }
