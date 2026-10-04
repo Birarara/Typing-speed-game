@@ -31,6 +31,58 @@
     <p id="score"></p>
 </section>
 
+<!-- Announces state changes the sighted player reads off #showSentence. Kept out
+     of .main-body (which is inert while the name gate is open) and separate from
+     #showSentence, which is rewritten on every keystroke. -->
+<p id="gameStatus" class="visually-hidden" role="status" aria-live="polite"></p>
+
+<div id="nameGate" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="nameGateHeading">
+    <div class="panel">
+        <h2 id="nameGateHeading">who's typing?</h2>
+        <form id="nameForm" novalidate>
+            <div class="field">
+                <label for="playerName">Your name</label>
+                <input type="text" id="playerName" name="playerName" maxlength="32" autocomplete="nickname"
+                       aria-describedby="nameHint nameError">
+                <p id="nameHint" class="field-hint">1&ndash;32 characters. Saved with your scores.</p>
+                <p id="nameError" class="field-error" role="alert" hidden></p>
+            </div>
+            <div class="panel-actions">
+                <button type="submit" id="nameSubmit">Start</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<section id="leaderboardPanel" class="overlay" hidden aria-labelledby="leaderboardHeading">
+    <div class="panel">
+        <h2 id="leaderboardHeading" tabindex="-1">Leaderboard</h2>
+        <p id="runSummary" class="run-summary"></p>
+        <p id="leaderboardStatus" class="status" role="status"></p>
+        <table id="leaderboardTable">
+            <caption class="visually-hidden">Top scores, best words per minute first</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Name</th>
+                    <th scope="col" class="numeric">WPM</th>
+                    <th scope="col" class="numeric">Accuracy</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody"></tbody>
+            <tbody id="leaderboardOwnRow"></tbody>
+        </table>
+        <div class="panel-actions">
+            <button type="button" id="playAgainBtn">Play again</button>
+            <button type="button" id="changeNameBtn">Change name</button>
+            <button type="button" id="retryLeaderboardBtn" hidden>Retry</button>
+        </div>
+    </div>
+</section>
+
+<script src="name-gate.js"></script>
+<script src="leaderboard.js"></script>
 <script src="script.js"></script>
 </body>
 </html> 

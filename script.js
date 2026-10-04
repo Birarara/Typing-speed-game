@@ -10,13 +10,34 @@ class TypingSpeedGame {
     constructor() {
         this.typingGround = document.querySelector('#textarea');
         this.showSentence = document.querySelector('#showSentence');
+        this.gameStatus = document.querySelector('#gameStatus');
         this.modeToggle = document.querySelector('#modeToggle');
         this.isGameRunning = false;
         this.includePunctuation = this.modeToggle.checked;
         this.author = '';
         this.startTime = 0;
+        this.playerName = '';
         this.bindEvents();
         this.showSentence.innerHTML = "Press [ Enter ] to start typing";
+
+        this.nameGate = new NameGate((name) => {
+            this.playerName = name;
+            this.typingGround.blur();
+            // The gate hides itself while focus is inside it, so without this an
+            // assistive-tech user gets no cue that it closed or what to do next.
+            this.announce(`Name saved as ${name}. Press Enter to start typing.`);
+        });
+        this.leaderboard = new Leaderboard({
+            onPlayAgain: () => {
+                this.leaderboard.hide();
+                this.startTyping();
+            },
+            onChangeName: () => {
+                this.leaderboard.hide();
+                this.nameGate.open();
+            }
+        });
+        this.nameGate.open();
     }
 
     bindEvents() {
@@ -30,8 +51,22 @@ class TypingSpeedGame {
         });
     }
 
+    /** Say something once in the polite live region. */
+    announce(message) {
+        if (!this.gameStatus) return;
+        this.gameStatus.textContent = message;
+    }
+
     handleKeydown(event) {
         if (event.key !== 'Enter') return;
+        // Let the name gate handle its own Enter presses: this listener
+        // preventDefaults every Enter, which would eat the form submit.
+        if (this.nameGate.isOpen) return;
+        if (!this.playerName) return;
+        if (event.target.closest && event.target.closest('#nameGate')) return;
+        // The leaderboard panel stops Enter from its own buttons and inputs
+        // before it reaches here, so anything that gets through (the focused
+        // #leaderboardHeading) is the advertised "press Enter to restart".
 
         event.preventDefault();
         if (this.isGameRunning) {
@@ -76,21 +111,75 @@ class TypingSpeedGame {
 
         if (wordCount === 0) {
             this.showSentence.innerHTML = `Speed: 0 WPM | Time: ${Math.round(timeTaken)}s [Press Enter to restart]`;
-            return;
+            return 0;
         }
 
         this.showSentence.innerHTML = `Speed: ${typingSpeed} WPM <br> Time: ${Math.round(timeTaken)}s <br> Written by ${this.author} <br> [Press Enter to restart]`;
+        return typingSpeed;
+    }
+
+    /**
+     * Read the per-character spans the typing test already paints and turn them
+     * into the run's accuracy. Must run before calculateTypingSpeed, which
+     * replaces #showSentence and destroys the spans.
+     *
+     * Characters typed past the end of the quote get no span at all, so they are
+     * counted separately as overflow errors.
+     *
+     * `completed` means the player reached the final character of the quote.
+     * Enter ends a run at any point, so without this an early stop would post a
+     * perfect accuracy on a handful of keystrokes.
+     */
+    collectRunStats() {
+        const characterSpans = this.showSentence.querySelectorAll('span');
+        const typedLength = this.typingGround.value.replace(/\n/g, '').length;
+        const quoteLength = characterSpans.length;
+
+        let correct = 0;
+        let incorrect = 0;
+        characterSpans.forEach((characterSpan) => {
+            if (characterSpan.classList.contains('correct-char')) correct++;
+            else if (characterSpan.classList.contains('incorrect-char')) incorrect++;
+        });
+
+        const overflow = Math.max(0, typedLength - quoteLength);
+        const errors = incorrect + overflow;
+        const total = correct + errors;
+        const accuracy = total === 0 ? 0 : Math.round((correct / total) * 10000) / 100;
+
+        return {
+            correct,
+            errors,
+            charsTyped: typedLength,
+            accuracy,
+            quoteLength,
+            completed: quoteLength > 0 && typedLength >= quoteLength
+        };
     }
 
     endTypingTest() {
         this.isGameRunning = false;
         const timeTaken = (Date.now() - this.startTime) / 1000;
-        this.calculateTypingSpeed(timeTaken);
+        const stats = this.collectRunStats();
+        const typingSpeed = this.calculateTypingSpeed(timeTaken);
         this.typingGround.value = '';
         this.typingGround.setAttribute('disabled', 'true');
+
+        this.leaderboard.submitAndShow({
+            player_name: this.playerName,
+            wpm: typingSpeed,
+            accuracy: stats.accuracy,
+            time_taken_seconds: Math.round(timeTaken * 100) / 100,
+            chars_typed: stats.charsTyped,
+            error_count: stats.errors,
+            punctuation_mode: this.includePunctuation,
+            quote_length: stats.quoteLength,
+            completed: stats.completed
+        });
     }
 
     async startTyping() {
+        this.leaderboard.hide();
         this.isGameRunning = true;
         this.showSentence.innerHTML = 'Fetching...';
         this.typingGround.value = '';
